@@ -1,31 +1,46 @@
-const movies = require('../dataMock/movies');
+const { PrismaClient } = require('@prisma/client');
 const ClientError = require('../erorrs/ClientError');
 
-const getAllMovies = (req, res) => {
+const prisma = new PrismaClient();
+
+const getAllMovies = async (req, res) => {
+  const movies = await prisma.movie.findMany();
   res.status(200).json({
+    message: 'Success',
     data: movies,
   });
 };
 
-const getMovieById = (req, res) => {
+const getMovieById = async (req, res) => {
   const { id } = req.params;
 
-  const movie = movies.find((item) => item.id === id);
+  const movie = await prisma.movie.findUnique({
+    where: {
+      id,
+    },
+  });
   if (!movie) {
     throw new ClientError('Movie Not Found', 404);
   }
 
   res.status(200).json({
+    message: 'Success',
     data: movie,
   });
 };
 
-const addMovie = (req, res) => {
-  const { id, title, genre } = req.body;
+const addMovie = async (req, res) => {
+  const { title, genre, directorId } = req.body;
 
-  movies.push({ id, title, genre });
+  const movie = await prisma.movie.create({
+    data: {
+      title,
+      genre,
+      directorId,
+    },
+  });
 
-  res.status(201).json({ message: 'Succesfully Adding Movie' });
+  res.status(201).json({ message: 'Success', data: movie });
 };
 
 module.exports = { getAllMovies, getMovieById, addMovie };

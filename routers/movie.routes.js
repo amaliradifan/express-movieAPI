@@ -6,7 +6,9 @@ const validateMovie = require('../middleware/validation/movie-validation');
 
 const router = express.Router();
 
-router.route('/movies').get(getAllMovies).post(validateMovie, tryCatch(addMovie));
+router.route('/movies')
+  .get(getAllMovies)
+  .post(validateMovie, tryCatch(addMovie));
 router.get('/movies/:id', tryCatch(getMovieById));
 
 module.exports = router;

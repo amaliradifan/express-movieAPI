@@ -2,13 +2,7 @@ const Joi = require('joi');
 const ClientError = require('../../erorrs/ClientError');
 
 const schema = Joi.object({
-  id: Joi.string(),
-  title: Joi.string()
-    .min(3)
-    .required(),
-  genre: Joi.string()
-    .required(),
-  directorId: Joi.string().required(),
+  fullname: Joi.string().min(3).max(100).required(),
 });
 
 const validate = (req, res, next) => {
