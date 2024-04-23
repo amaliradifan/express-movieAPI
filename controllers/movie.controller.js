@@ -4,7 +4,22 @@ const ClientError = require('../erorrs/ClientError');
 const prisma = new PrismaClient();
 
 const getAllMovies = async (req, res) => {
-  const movies = await prisma.movie.findMany();
+  const { q } = req.query;
+  const movies = await prisma.movie.findMany({
+    include: {
+      director: {
+        select: {
+          fullname: true,
+        },
+      },
+    },
+    where: {
+      title: {
+        contains: q,
+        mode: 'insensitive',
+      },
+    },
+  });
   res.status(200).json({
     message: 'Success',
     data: movies,
